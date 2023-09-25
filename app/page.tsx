@@ -1,6 +1,8 @@
 'use client'
-import { useState, FormEvent } from 'react'
+import { useState, useEffect, FormEvent } from 'react'
 import { TextInput, SelectType, SizeSlider, ColorPicker } from './components'
+import Image from 'next/image'
+import generateQrcode from './lib/api/generateQrcode'
 
 export default function Home() {
   const [text, setText] = useState<string>('')
@@ -8,6 +10,27 @@ export default function Home() {
   const [qrSize, setQrSize] = useState<number>(500)
   const [qrColor, setQrColor] = useState<string>('#000000')
   const [qrBgColor, setQrBgColor] = useState<string>('#ffffff')
+  const [imgSrc, setImgSrc] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchQrCodeImage = async () => {
+      try {
+        const params = { url: 'https://buckychu.im' }
+        const response = await generateQrcode.getPng(params)
+        const blob = new Blob([response.data], { type: 'image/png' })
+        const objectURL = URL.createObjectURL(blob)
+        setImgSrc(objectURL)
+      } catch (_) {
+        console.error('Error fetching image:')
+      }
+    }
+
+    fetchQrCodeImage()
+
+    return () => {
+      setImgSrc(null)
+    }
+  }, [])
 
   const generateQRCode = (e: FormEvent) => {
     e.preventDefault()
@@ -43,6 +66,13 @@ export default function Home() {
             </button>
           </div>
         </form>
+        {imgSrc ? (
+          <div className='flex justify-center mt-10'>
+            <Image src={imgSrc} width={500} height={500} alt='QR Code Image' />
+          </div>
+        ) : (
+          'Loading...'
+        )}
       </div>
     </main>
   )
