@@ -4,6 +4,16 @@ interface GetParams {
   [key: string]: string | number | boolean
 }
 
+interface PostData {
+  url?: string
+  phone?: string
+  email?: string
+  address?: string
+  foreground?: string
+  background?: string
+  dimension?: string
+}
+
 class APIClient {
   client: AxiosInstance
 
@@ -20,7 +30,11 @@ class APIClient {
   get(path: string, params?: GetParams) {
     return this.client.get(path, { params })
   }
+
+  post(path: string, data: PostData) {
+    return this.client.post(path, data)
+  }
 }
 
-export type { GetParams }
+export type { GetParams, PostData }
 export default APIClient

@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, FormEvent } from 'react'
+import { useState, FormEvent } from 'react'
 import { TextInput, SelectType, SizeSlider, ColorPicker } from './components'
 import Image from 'next/image'
 import generateQrcode from './lib/api/generateQrcode'
@@ -12,29 +12,35 @@ export default function Home() {
   const [qrBgColor, setQrBgColor] = useState<string>('#ffffff')
   const [imgSrc, setImgSrc] = useState<string | null>(null)
 
-  useEffect(() => {
-    const fetchQrCodeImage = async () => {
-      try {
-        const params = { url: 'https://buckychu.im' }
-        const response = await generateQrcode.getPng(params)
-        const blob = new Blob([response.data], { type: 'image/png' })
-        const objectURL = URL.createObjectURL(blob)
-        setImgSrc(objectURL)
-      } catch (_) {
-        console.error('Error fetching image:')
+  const fetchQrcodeSvg = async () => {
+    try {
+      const typeMapping: { [key: string]: string } = {
+        URL: 'url',
+        電話: 'phone',
+        地址: 'address',
+        Email: 'email'
       }
+
+      const key = typeMapping[qrType as keyof typeof typeMapping]
+
+      const data = {
+        [key]: text,
+        foreground: qrColor,
+        background: qrBgColor,
+        dimensions: qrSize
+      }
+      const response = await generateQrcode.getSvg(data)
+      const blob = new Blob([response.data], { type: 'image/svg+xml' })
+      const objectURL = URL.createObjectURL(blob)
+      setImgSrc(objectURL)
+    } catch (_) {
+      console.error('Error fetching image:')
     }
+  }
 
-    fetchQrCodeImage()
-
-    return () => {
-      setImgSrc(null)
-    }
-  }, [])
-
-  const generateQRCode = (e: FormEvent) => {
+  const generateQRCode = async (e: FormEvent) => {
     e.preventDefault()
-    // 這裡是產生 QR code 的邏輯
+    await fetchQrcodeSvg()
   }
 
   return (
@@ -71,7 +77,7 @@ export default function Home() {
             <Image src={imgSrc} width={500} height={500} alt='QR Code Image' />
           </div>
         ) : (
-          'Loading...'
+          '請點擊「產生 QR Code」按鈕'
         )}
       </div>
     </main>

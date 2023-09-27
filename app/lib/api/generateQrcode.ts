@@ -1,4 +1,4 @@
-import APIClient, { GetParams } from './client'
+import APIClient, { GetParams, PostData } from './client'
 import Endpoints from './endpoints'
 
 const apiClient = new APIClient()
@@ -13,6 +13,9 @@ interface QrCodeParams {
 const generateQrcode = {
   getPng: (params: QrCodeParams) => {
     return apiClient.get(Endpoints.GenerateQrcode.pngType, params as GetParams)
+  },
+  getSvg: (data: PostData) => {
+    return apiClient.post(Endpoints.GenerateQrcode.svgType, data)
   }
 }
 
