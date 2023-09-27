@@ -1,23 +1,29 @@
-import { FC, SetStateAction, Dispatch } from 'react'
+import { FC } from 'react'
+import { UseFormRegister, UseFormSetValue } from 'react-hook-form'
+import { FormInputs } from '../page'
 
 interface ColorPickerProps {
   label: string
-  color: string
-  setColor: Dispatch<SetStateAction<string>>
+  name: keyof FormInputs
+  register: UseFormRegister<FormInputs>
+  setValue: UseFormSetValue<FormInputs>
 }
 
 const ColorPicker: FC<ColorPickerProps> = ({
   label,
-  color,
-  setColor
+  name,
+  register,
+  setValue
 }) => {
   return (
     <div className='mb-4'>
       <label className='block font-bold mb-2'>{label}</label>
       <input
         type='color'
-        value={color}
-        onChange={(e) => setColor(e.target.value)}
+        {...register(name)}
+        onChange={(e) => {
+          setValue(name, e.target.value)
+        }}
       />
     </div>
   )

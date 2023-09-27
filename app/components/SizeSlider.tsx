@@ -1,23 +1,25 @@
-import { FC, SetStateAction, Dispatch } from 'react'
+import { FC } from 'react'
+import { UseFormRegister, UseFormSetValue } from 'react-hook-form'
+import { FormInputs } from '../page'
 
 interface SizeSliderProps {
-  qrSize: number
-  setQrSize: Dispatch<SetStateAction<number>>
+  register: UseFormRegister<FormInputs>
+  setValue: UseFormSetValue<FormInputs>
 }
 
-const SizeSlider: FC<SizeSliderProps> = ({ qrSize, setQrSize }) => {
-  return (
-    <div className='mb-4'>
-      <label className='block font-bold mb-2'>調整圖片大小</label>
-      <input
-        type='range'
-        min='100'
-        max='2000'
-        value={qrSize}
-        onChange={(e) => setQrSize(parseInt(e.target.value))}
-      />
-    </div>
-  )
-}
+const SizeSlider: FC<SizeSliderProps> = ({ register, setValue }) => (
+  <div className='mb-4'>
+    <label className='block font-bold mb-2'>調整圖片大小</label>
+    <input
+      type='range'
+      min='100'
+      max='2000'
+      {...register('qrSize')}
+      onChange={(e) => {
+        setValue('qrSize', parseInt(e.target.value, 10))
+      }}
+    />
+  </div>
+)
 
 export default SizeSlider

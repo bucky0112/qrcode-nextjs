@@ -1,33 +1,53 @@
 'use client'
-import { useState, FormEvent } from 'react'
-import { TextInput, SelectType, SizeSlider, ColorPicker } from './components'
+import { useState } from 'react'
 import Image from 'next/image'
+import { useForm, SubmitHandler } from 'react-hook-form'
 import generateQrcode from './lib/api/generateQrcode'
+import { TextInput, SelectType, SizeSlider, ColorPicker } from './components'
+
+export type FormInputs = {
+  text: string
+  qrType: string
+  qrSize: number
+  qrColor: string
+  qrBgColor: string
+}
+
+type QrCodeData = {
+  url?: string
+  phone?: string
+  address?: string
+  email?: string
+  foreground: string
+  background: string
+  dimensions: number
+}
 
 export default function Home() {
-  const [text, setText] = useState<string>('')
-  const [qrType, setQrType] = useState<string>('URL')
-  const [qrSize, setQrSize] = useState<number>(500)
-  const [qrColor, setQrColor] = useState<string>('#000000')
-  const [qrBgColor, setQrBgColor] = useState<string>('#ffffff')
+  const { register, handleSubmit, setValue } = useForm<FormInputs>({
+    defaultValues: {
+      qrSize: 500,
+      qrColor: '#000000',
+      qrBgColor: '#ffffff'
+    }
+  })
   const [imgSrc, setImgSrc] = useState<string | null>(null)
 
-  const fetchQrcodeSvg = async () => {
+  const fetchQrcodeSvg = async (formData: FormInputs) => {
     try {
-      const typeMapping: { [key: string]: string } = {
+      const typeMapping: { [key in FormInputs['qrType']]: keyof QrCodeData } = {
         URL: 'url',
         電話: 'phone',
         地址: 'address',
         Email: 'email'
       }
 
-      const key = typeMapping[qrType as keyof typeof typeMapping]
-
-      const data = {
-        [key]: text,
-        foreground: qrColor,
-        background: qrBgColor,
-        dimensions: qrSize
+      const dataKey = typeMapping[formData.qrType]
+      const data: QrCodeData = {
+        [dataKey]: formData.text,
+        foreground: formData.qrColor,
+        background: formData.qrBgColor,
+        dimensions: formData.qrSize
       }
       const response = await generateQrcode.getSvg(data)
       const blob = new Blob([response.data], { type: 'image/svg+xml' })
@@ -38,29 +58,33 @@ export default function Home() {
     }
   }
 
-  const generateQRCode = async (e: FormEvent) => {
-    e.preventDefault()
-    await fetchQrcodeSvg()
+  const onSubmit: SubmitHandler<FormInputs> = async (data) => {
+    await fetchQrcodeSvg(data)
   }
 
   return (
     <main className='flex min-h-screen flex-col items-center justify-between p-24'>
       <div className='container mx-auto p-4'>
         <h1 className='text-3xl mb-4'>QR Code 製造器</h1>
-        <form onSubmit={generateQRCode} className='flex flex-col gap-y-5'>
-          <SelectType qrType={qrType} setQrType={setQrType} />
-          <TextInput text={text} setText={setText} />
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className='flex flex-col gap-y-5'
+        >
+          <SelectType register={register} />
+          <TextInput register={register} />
           <div className='flex items-center justify-evenly'>
-            <SizeSlider qrSize={qrSize} setQrSize={setQrSize} />
+            <SizeSlider register={register} setValue={setValue} />
             <ColorPicker
+              register={register}
               label='選擇顏色'
-              color={qrColor}
-              setColor={setQrColor}
+              name='qrColor'
+              setValue={setValue}
             />
             <ColorPicker
+              register={register}
               label='選擇背景顏色'
-              color={qrBgColor}
-              setColor={setQrBgColor}
+              name='qrBgColor'
+              setValue={setValue}
             />
           </div>
           <div className='flex justify-center mt-5'>
