@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import generateQrcode from './lib/api/generateQrcode'
@@ -24,7 +24,13 @@ type QrCodeData = {
 }
 
 export default function Home() {
-  const { register, handleSubmit, setValue } = useForm<FormInputs>({
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    watch
+  } = useForm<FormInputs>({
     defaultValues: {
       qrSize: 500,
       qrColor: '#000000',
@@ -32,6 +38,21 @@ export default function Home() {
     }
   })
   const [imgSrc, setImgSrc] = useState<string | null>(null)
+
+  const qrType = watch('qrType', 'URL')
+
+  useEffect(() => {
+    setImgSrc(null)
+  }, [qrType])
+
+  const validationPatterns = {
+    URL: /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/,
+    電話: /^(\+?\d{1,3}[-.\s]?)?\d{10}$/,
+    地址: /.+/,
+    Email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  }
+
+  const pattern = validationPatterns[qrType as keyof typeof validationPatterns]
 
   const fetchQrcodeSvg = async (formData: FormInputs) => {
     try {
@@ -62,6 +83,8 @@ export default function Home() {
     await fetchQrcodeSvg(data)
   }
 
+  const hasErrors = Object.keys(errors).length > 0
+
   return (
     <main className='flex min-h-screen flex-col items-center justify-between p-24'>
       <div className='container mx-auto p-4'>
@@ -71,7 +94,7 @@ export default function Home() {
           className='flex flex-col gap-y-5'
         >
           <SelectType register={register} />
-          <TextInput register={register} />
+          <TextInput register={register} pattern={pattern} errors={errors} />
           <div className='flex items-center justify-evenly'>
             <SizeSlider register={register} setValue={setValue} />
             <ColorPicker
@@ -90,18 +113,22 @@ export default function Home() {
           <div className='flex justify-center mt-5'>
             <button
               type='submit'
-              className='bg-green-500 hover:bg-green-100 text-white hover:text-slate-700 font-bold py-2 px-4 rounded text-center'
+              className={`${hasErrors ? 'bg-gray-400' : 'bg-green-500'} hover:bg-green-100 text-white hover:text-slate-700 font-bold py-2 px-4 rounded text-center`}
             >
               產生 QR Code
             </button>
           </div>
         </form>
-        {imgSrc ? (
+        {imgSrc && Object.keys(errors).length < 1 ? (
           <div className='flex justify-center mt-10'>
             <Image src={imgSrc} width={500} height={500} alt='QR Code Image' />
           </div>
         ) : (
-          '請點擊「產生 QR Code」按鈕'
+          <p>
+            {hasErrors
+              ? '請輸入正確的資訊'
+              : '請點擊「產生 QR Code」按鈕'}
+          </p>
         )}
       </div>
     </main>
