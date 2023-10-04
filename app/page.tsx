@@ -1,9 +1,10 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import Image from 'next/image'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import generateQrcode from './lib/api/generateQrcode'
 import { TextInput, SelectType, SizeSlider, ColorPicker } from './components'
+import useStore from './store'
 
 export type FormInputs = {
   text: string
@@ -24,6 +25,7 @@ type QrCodeData = {
 }
 
 export default function Home() {
+  const { imgSrc, setImgSrc } = useStore()
   const {
     register,
     handleSubmit,
@@ -37,7 +39,6 @@ export default function Home() {
       qrBgColor: '#ffffff'
     }
   })
-  const [imgSrc, setImgSrc] = useState<string | null>(null)
 
   const qrType = watch('qrType', 'URL')
 
