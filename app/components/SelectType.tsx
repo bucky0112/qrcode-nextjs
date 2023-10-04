@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import { UseFormRegister } from 'react-hook-form'
-import { FormInputs } from '../page'
+import { FormInputs } from './CreateSvgForm'
 
 interface SelectTypeProps {
   register: UseFormRegister<FormInputs>

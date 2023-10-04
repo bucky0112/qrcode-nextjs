@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import { UseFormRegister, FieldErrors } from 'react-hook-form'
-import { FormInputs } from '../page'
+import { FormInputs } from './CreateSvgForm'
 
 interface TextInputProps {
   register: UseFormRegister<FormInputs>

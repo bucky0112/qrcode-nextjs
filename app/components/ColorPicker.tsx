@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import { UseFormRegister, UseFormSetValue } from 'react-hook-form'
-import { FormInputs } from '../page'
+import { FormInputs } from './CreateSvgForm'
 
 interface ColorPickerProps {
   label: string
