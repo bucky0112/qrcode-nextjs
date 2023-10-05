@@ -1,0 +1,7 @@
+.toggleCheckbox:checked {
+  @apply left-6 border-blue-600 bg-blue-600;
+}
+
+.toggleCheckbox {
+  @apply right-6 top-0 transition-all duration-200 ease-in;
+}
