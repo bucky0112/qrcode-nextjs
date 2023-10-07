@@ -1,10 +1,10 @@
 import { FC } from 'react'
 import { UseFormRegister, UseFormSetValue } from 'react-hook-form'
-import { FormInputs } from './CreateSvgForm'
+import { SvgFormInputs } from './CreateSvgForm'
 
 interface SizeSliderProps {
-  register: UseFormRegister<FormInputs>
-  setValue: UseFormSetValue<FormInputs>
+  register: UseFormRegister<SvgFormInputs>
+  setValue: UseFormSetValue<SvgFormInputs>
 }
 
 const SizeSlider: FC<SizeSliderProps> = ({ register, setValue }) => (

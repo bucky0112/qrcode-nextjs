@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
-import { useForm, SubmitHandler } from 'react-hook-form'
+import { useForm, SubmitHandler, UseFormRegister } from 'react-hook-form'
 import generateQrcode from '../lib/api/generateQrcode'
 import { TextInput, SelectType, SizeSlider, ColorPicker } from '../components'
 import useStore from '../store'
 
-export type FormInputs = {
+export type SvgFormInputs = {
   text: string
   qrType: string
   qrSize: number
@@ -30,7 +30,7 @@ const CreateSvgForm = () => {
     setValue,
     formState: { errors },
     watch
-  } = useForm<FormInputs>({
+  } = useForm<SvgFormInputs>({
     defaultValues: {
       qrSize: 500,
       qrColor: '#000000',
@@ -57,9 +57,9 @@ const CreateSvgForm = () => {
 
   const pattern = validationPatterns[qrType as keyof typeof validationPatterns]
 
-  const fetchQrcodeSvg = async (formData: FormInputs) => {
+  const fetchQrcodeSvg = async (formData: SvgFormInputs) => {
     try {
-      const typeMapping: { [key in FormInputs['qrType']]: keyof QrCodeData } = {
+      const typeMapping: { [key in SvgFormInputs['qrType']]: keyof QrCodeData } = {
         URL: 'url',
         電話: 'phone',
         地址: 'address',
@@ -82,7 +82,7 @@ const CreateSvgForm = () => {
     }
   }
 
-  const onSubmit: SubmitHandler<FormInputs> = async (data) => {
+  const onSubmit: SubmitHandler<SvgFormInputs> = async (data) => {
     await fetchQrcodeSvg(data)
   }
 
@@ -90,8 +90,10 @@ const CreateSvgForm = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-y-5'>
-      <SelectType register={register} />
-      <TextInput register={register} pattern={pattern} errors={errors} />
+      {/* <SelectType register={register} /> */}
+      <SelectType register={register as UseFormRegister<SvgFormInputs>} imageType="SVG" />
+      {/* <TextInput register={register} pattern={pattern} errors={errors} /> */}
+      <TextInput register={register as UseFormRegister<SvgFormInputs>} pattern={pattern} errors={errors} imageType="SVG" />
       <div className='flex items-center justify-evenly'>
         <SizeSlider register={register} setValue={setValue} />
         <ColorPicker

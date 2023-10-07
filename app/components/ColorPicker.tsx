@@ -1,12 +1,12 @@
 import { FC } from 'react'
 import { UseFormRegister, UseFormSetValue } from 'react-hook-form'
-import { FormInputs } from './CreateSvgForm'
+import { SvgFormInputs } from './CreateSvgForm'
 
 interface ColorPickerProps {
   label: string
-  name: keyof FormInputs
-  register: UseFormRegister<FormInputs>
-  setValue: UseFormSetValue<FormInputs>
+  name: keyof SvgFormInputs
+  register: UseFormRegister<SvgFormInputs>
+  setValue: UseFormSetValue<SvgFormInputs>
 }
 
 const ColorPicker: FC<ColorPickerProps> = ({
