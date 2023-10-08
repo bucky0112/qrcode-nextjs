@@ -6,7 +6,7 @@ import CreatePngForm from './components/CreatePngForm'
 import Switcher from './components/Switcher'
 
 export default function Home() {
-  const { imgSrc, errorsFromForm, selectedFormat } = useStore()
+  const { imgSrc, errorsFromForm, selectedFormat, qrSize } = useStore()
   const hasErrors = Object.keys(errorsFromForm).length > 0
 
   return (
@@ -19,7 +19,7 @@ export default function Home() {
         </div>
         {imgSrc && Object.keys(errorsFromForm).length < 1 ? (
           <div className='flex justify-center mt-10'>
-            <Image src={imgSrc} width={500} height={500} alt='QR Code Image' />
+            <Image src={imgSrc} width={qrSize} height={qrSize} alt='QR Code Image' />
           </div>
         ) : (
           <p>{hasErrors ? '請輸入正確的資訊' : '請點擊「產生 QR Code」按鈕'}</p>
