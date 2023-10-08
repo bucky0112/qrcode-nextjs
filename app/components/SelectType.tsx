@@ -12,10 +12,6 @@ interface SelectTypeProps<T extends ImageType> {
   imageType: T
 }
 
-// interface SelectTypeProps {
-//   register: UseFormRegister<SvgFormInputs>
-// }
-
 const SelectType: FC<SelectTypeProps<ImageType>> = ({
   register,
   imageType
@@ -33,7 +29,6 @@ const SelectType: FC<SelectTypeProps<ImageType>> = ({
       <label className='block font-bold mb-2'>選擇 QR Code 類型</label>
       <select
         className='w-full p-2 border rounded focus:outline-none focus:ring focus:border-blue-300'
-        // {...register('qrType')}
         {...adjustedRegister('qrType')}
       >
         <option value='URL'>URL</option>

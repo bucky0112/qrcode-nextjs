@@ -6,7 +6,6 @@ import { PngFormInputs } from './CreatePngForm'
 type ImageType = 'SVG' | 'PNG'
 
 interface TextInputProps<T extends ImageType> {
-  // register: UseFormRegister<SvgFormInputs>
   register: T extends 'SVG'
   ? UseFormRegister<SvgFormInputs>
   : UseFormRegister<PngFormInputs>
@@ -34,8 +33,7 @@ const TextInput: FC<TextInputProps<ImageType>> = ({ register, pattern, errors, i
             ? 'focus:border-red-500 border-red-500 ring-red-500'
             : 'focus:border-blue-300'
         }`}
-        // {...register('text', { required: true, pattern })}
-        {...adjustedRegister('qrType')}
+        {...adjustedRegister('text', { required: true, pattern })}
       />
     </div>
   )

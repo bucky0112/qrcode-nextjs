@@ -90,9 +90,7 @@ const CreateSvgForm = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-y-5'>
-      {/* <SelectType register={register} /> */}
       <SelectType register={register as UseFormRegister<SvgFormInputs>} imageType="SVG" />
-      {/* <TextInput register={register} pattern={pattern} errors={errors} /> */}
       <TextInput register={register as UseFormRegister<SvgFormInputs>} pattern={pattern} errors={errors} imageType="SVG" />
       <div className='flex items-center justify-evenly'>
         <SizeSlider register={register} setValue={setValue} />

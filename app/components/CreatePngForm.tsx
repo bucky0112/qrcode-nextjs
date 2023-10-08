@@ -74,9 +74,7 @@ const CreatePngForm = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-y-5'>
-      {/* <SelectType register={register} /> */}
       <SelectType register={register as UseFormRegister<PngFormInputs>} imageType="PNG" />
-      {/* <TextInput register={register} pattern={pattern} errors={errors} /> */}
       <TextInput register={register as UseFormRegister<PngFormInputs>} pattern={pattern} errors={errors} imageType="PNG" />
       <div className='flex justify-center mt-5'>
         <button
